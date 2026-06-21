@@ -34,6 +34,7 @@ while True:
         print("got none")
     else:
         print("none")
+    time.sleep(0.2)
 
 GPIO.cleanup()
 
