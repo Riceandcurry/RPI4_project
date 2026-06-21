@@ -4,8 +4,8 @@ import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 #GPIO.setup(11, GPIO.OUT) #servo
-GPIO.setup(11, GPIO.IN)  #pir sensor 
-GPIO.setup(7,GPIO.OUT) # pir sensor
+#GPIO.setup(11, GPIO.IN)  #pir sensor 
+GPIO.setup(7,GPIO.IN) # pir sensor
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
@@ -26,8 +26,7 @@ print("hello worlddd")
 
 
 while True:
-
-    i = GPIO.input(11)
+    i = GPIO.input(7)
     if i == 1:
         print("got 1")
     elif i == 0:
