@@ -26,10 +26,7 @@ print("hello worlddd")
 
 
 while True:
-    GPIO.output(7,1)  #output high to the pin 7
-    time.sleep(1)
-    GPIO.output(7,0)  #output low to pin 7
-    time.sleep(1)
+
     i = GPIO.input(11)
     if i == 1:
         print("got 1")
