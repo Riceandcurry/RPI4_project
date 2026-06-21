@@ -4,7 +4,6 @@ import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 #GPIO.setup(11, GPIO.OUT) #servo
-#GPIO.setup(11, GPIO.IN)  #pir sensor 
 GPIO.setup(7,GPIO.IN) # pir sensor
 
 """
@@ -26,16 +25,14 @@ print("hello worlddd")
 
 
 while True:
-    i = GPIO.input(7)
+    i = GPIO.input(7) #get resut of input
     if i == 1:
-        print("got 1")
+        print("got 1") #movement detected
     elif i == 0:
-        print("got none")
-    else:
-        print("none")
-    time.sleep(0.2)
+        print("got 0") #movement not detected
+    time.sleep(0.2) #0.2 second pause cause why not
 
-GPIO.cleanup()
+GPIO.cleanup() #general exit statement
 
 
 
