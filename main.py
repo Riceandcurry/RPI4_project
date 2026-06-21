@@ -33,8 +33,12 @@ while True:
 
 print("hello worlddd")
 
-GPIO.output(11, GPIO.HIGH)
-print("IR LED ON")
+
+pwm = GPIO.PWM(11, 38000)
+pwm.start(50)  # 50% duty cycle
+
+print("IR transmitter ON (38kHz)")
+
 while True:
         if GPIO.input(7) == 0:
             print("detected")
