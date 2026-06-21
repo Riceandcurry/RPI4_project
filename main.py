@@ -4,7 +4,9 @@ import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 #GPIO.setup(11, GPIO.OUT) #servo
-GPIO.setup(7,GPIO.IN) # pir sensor
+#GPIO.setup(7,GPIO.IN) # pir sensor
+GPIO.setup(11, GPIO.OUT) #ir led
+GPIO.setup(7, GPIO.IN)  #ir reciever
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
@@ -19,11 +21,7 @@ time.sleep(1)
 pwm.stop()  #GPIO servo motor works
 """
 
-
-
-print("hello worlddd")
-
-
+"""
 while True:
     i = GPIO.input(7) #get resut of input
     if i == 1:
@@ -31,6 +29,18 @@ while True:
     elif i == 0:
         print("got 0") #movement not detected
     time.sleep(0.2) #0.2 second pause cause why not
+"""
+
+print("hello worlddd")
+
+GPIO.output(11, GPIO.HIGH)
+print("IR LED ON")
+while True:
+        if GPIO.input(7) == 0:
+            print("detected")
+        elif GPIO.input(7) == 1:
+            print("nothin!")
+        time.sleep(0.05)
 
 GPIO.cleanup() #general exit statement
 
