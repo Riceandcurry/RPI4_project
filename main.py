@@ -8,26 +8,20 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
 # Using Physical Pins 15, 16, and 18
-PINS = [15, 16, 18]
 
-for pin in PINS:
-    GPIO.setup(pin, GPIO.OUT)
+GPIO.setup(15, GPIO.OUT)
 
-print("Testing physical Pins 15, 16, and 18...")
 
-try:
-    while True:
-        for pin in PINS:
-            print(f"Turning ON Physical Pin {pin}")
-            GPIO.output(pin, GPIO.HIGH)
-            time.sleep(1)
-            GPIO.output(pin, GPIO.LOW)
 
-except KeyboardInterrupt:
-    print("\nTest finished.")
-finally:
-    GPIO.cleanup()
-    
+while True:
+
+    print("Turning ON")
+    GPIO.output(15, GPIO.HIGH)
+    time.sleep(100)
+    print("Turning OFF")
+    GPIO.output(15, GPIO.LOW)
+
+
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
 pwm.start(0)
