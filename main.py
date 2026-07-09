@@ -17,9 +17,10 @@ while True:
 
     print("Turning ON")
     GPIO.output(15, GPIO.HIGH)
-    time.sleep(100)
+    time.sleep(5)
     print("Turning OFF")
     GPIO.output(15, GPIO.LOW)
+    time.sleep(5)
 
 
 """
