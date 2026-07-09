@@ -17,9 +17,9 @@ RED = GPIO.PWM(LED_R_PIN, 1000)
 GREEN = GPIO.PWM(LED_G_PIN, 1000)
 BLUE = GPIO.PWM(LED_B_PIN, 1000)
 
-RED.ChangeDutyCycle(_map(0, 0, 255, 0, 100))
-GREEN.ChangeDutyCycle(_map(151, 0, 255, 0, 100))
-BLUE.ChangeDutyCycle(_map(157, 0, 255, 0, 100))
+RED.start(50)
+GREEN.start(50)
+BLUE.start(50)
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
