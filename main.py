@@ -7,52 +7,27 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
-RED_PIN = 11
-GREEN_PIN = 13
-BLUE_PIN = 15
+# Using Physical Pins 15, 16, and 18
+PINS = [15, 16, 18]
 
-# Set pins as outputs
-GPIO.setup(RED_PIN, GPIO.OUT)
-GPIO.setup(GREEN_PIN, GPIO.OUT)
-GPIO.setup(BLUE_PIN, GPIO.OUT)
+for pin in PINS:
+    GPIO.setup(pin, GPIO.OUT)
 
-# Initialize PWM on all 3 pins at 100Hz
-red_pwm = GPIO.PWM(RED_PIN, 100)
-green_pwm = GPIO.PWM(GREEN_PIN, 100)
-blue_pwm = GPIO.PWM(BLUE_PIN, 100)
-
-# Start with LED off (0% duty cycle)
-red_pwm.start(0)
-green_pwm.start(0)
-blue_pwm.start(0)
-
-def set_color(red, green, blue):
-    # Pass values from 0 to 100 for intensity
-    red_pwm.ChangeDutyCycle(red)
-    green_pwm.ChangeDutyCycle(green)
-    blue_pwm.ChangeDutyCycle(blue)
+print("Testing physical Pins 15, 16, and 18...")
 
 try:
     while True:
-        set_color(100, 0, 0)   # Red
-        time.sleep(1)
-        set_color(0, 100, 0)   # Green
-        time.sleep(1)
-        set_color(0, 0, 100)   # Blue
-        time.sleep(1)
-        set_color(50, 0, 50)   # Purple
-        time.sleep(1)
+        for pin in PINS:
+            print(f"Turning ON Physical Pin {pin}")
+            GPIO.output(pin, GPIO.HIGH)
+            time.sleep(1)
+            GPIO.output(pin, GPIO.LOW)
 
 except KeyboardInterrupt:
-    print("\nStopping...")
-
+    print("\nTest finished.")
 finally:
-    # Clean up PWM and GPIO state
-    red_pwm.stop()
-    green_pwm.stop()
-    blue_pwm.stop()
     GPIO.cleanup()
-
+    
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
 pwm.start(0)
