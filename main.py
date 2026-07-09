@@ -9,17 +9,17 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(7, GPIO.IN)  #ir reciever
 # Using Physical Pins 15, 16, and 18
 
-GPIO.setup(15, GPIO.OUT)
+GPIO.setup(11, GPIO.OUT)
 
 
 
 while True:
 
     print("Turning ON")
-    GPIO.output(15, GPIO.HIGH)
+    GPIO.output(11, GPIO.HIGH)
     time.sleep(5)
     print("Turning OFF")
-    GPIO.output(15, GPIO.LOW)
+    GPIO.output(11, GPIO.LOW)
     time.sleep(5)
 
 
