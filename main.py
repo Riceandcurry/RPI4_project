@@ -17,9 +17,10 @@ RED = GPIO.PWM(LED_R_PIN, 1000)
 GREEN = GPIO.PWM(LED_G_PIN, 1000)
 BLUE = GPIO.PWM(LED_B_PIN, 1000)
 
-RED.start(50)
-GREEN.start(50)
-BLUE.start(50)
+while (1):
+    RED.start(50)
+    GREEN.start(50)
+    BLUE.start(50)
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
