@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM) #GPI.BOARD
+GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(11, GPIO.OUT) #servo
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led
@@ -13,14 +13,13 @@ LED_G_PIN = 12
 LED_B_PIN = 18
 
 GPIO.setup([LED_R_PIN, LED_G_PIN, LED_B_PIN],GPIO.OUT)
-RED = GPIO.PWM(LED_R_PIN, 1000)
-GREEN = GPIO.PWM(LED_G_PIN, 1000)
-BLUE = GPIO.PWM(LED_B_PIN, 1000)
+
 
 while (1):
-    RED.start(50)
-    GREEN.start(50)
-    BLUE.start(50)
+    GPIO.PWM(LED_R_PIN, 1)
+    GPIO.PWM(LED_G_PIN, 1)
+    GPIO.PWM(LED_B_PIN, 1)
+    
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
