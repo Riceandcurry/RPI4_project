@@ -5,21 +5,12 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(11, GPIO.OUT) #servo
 #GPIO.setup(7,GPIO.IN) # pir sensor
-#GPIO.setup(11, GPIO.OUT) #ir led
+GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
 
-LED_R_PIN = 13
-LED_G_PIN = 12
-LED_B_PIN = 18
-
-GPIO.setup([LED_R_PIN, LED_G_PIN, LED_B_PIN],GPIO.OUT)
-
-
 while (1):
-    GPIO.PWM(LED_R_PIN, 1)
-    GPIO.PWM(LED_G_PIN, 1)
-    GPIO.PWM(LED_B_PIN, 1)
-    
+    GPIO.output(11, GPIO.HIGH)
+
 
 """
 pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
