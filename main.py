@@ -18,23 +18,42 @@ while True:
 
     print("Turning ON 11")
     GPIO.output(11, GPIO.HIGH)
-    time.sleep(5)
+    time.sleep(2)
     print("Turning OFF 11")
     GPIO.output(11, GPIO.LOW)
-    time.sleep(5)
+    time.sleep(2)
 
     print("Turning ON 13")
     GPIO.output(13, GPIO.HIGH)
-    time.sleep(5)
+    time.sleep(2)
     print("Turning OFF 13")
     GPIO.output(13, GPIO.LOW)
-    time.sleep(5)
+    time.sleep(2)
 
     print("Turning ON 15")
     GPIO.output(15, GPIO.HIGH)
-    time.sleep(5)
+    time.sleep(2)
     print("Turning OFF 15")
     GPIO.output(15, GPIO.LOW)
+    time.sleep(2)
+
+    print("Turning ON 11 and 13") #11 and 13
+    GPIO.output(11, GPIO.HIGH)
+    GPIO.output(13, GPIO.HIGH)
+    time.sleep(2)
+    print("Turning ON 13 and 15") #13 and 15
+    GPIO.output(11, GPIO.LOW)  
+    GPIO.output(15, GPIO.HIGH)
+    time.sleep(2)
+    print("Turning ON 11 and 15") #11 15
+    GPIO.output(13, GPIO.LOW)  
+    GPIO.output(11, GPIO.HIGH)
+    time.sleep(2)
+
+    print("all offff") #all offfff
+    GPIO.output(11, GPIO.LOW)  
+    GPIO.output(15, GPIO.LOW)  
+    
     time.sleep(5)
 
 
