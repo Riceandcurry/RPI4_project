@@ -7,19 +7,34 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
-# Using Physical Pins 15, 16, and 18
 
-GPIO.setup(11, GPIO.OUT)
+GPIO.setup(11, GPIO.OUT) #11 means pin 11, GPIO 17
+GPIO.setup(13, GPIO.OUT)
+GPIO.setup(15, GPIO.OUT)
 
 
 
 while True:
 
-    print("Turning ON")
+    print("Turning ON 11")
     GPIO.output(11, GPIO.HIGH)
     time.sleep(5)
-    print("Turning OFF")
+    print("Turning OFF 11")
     GPIO.output(11, GPIO.LOW)
+    time.sleep(5)
+
+    print("Turning ON 13")
+    GPIO.output(13, GPIO.HIGH)
+    time.sleep(5)
+    print("Turning OFF 13")
+    GPIO.output(13, GPIO.LOW)
+    time.sleep(5)
+
+    print("Turning ON 15")
+    GPIO.output(15, GPIO.HIGH)
+    time.sleep(5)
+    print("Turning OFF 15")
+    GPIO.output(15, GPIO.LOW)
     time.sleep(5)
 
 
