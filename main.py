@@ -3,7 +3,7 @@ import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
-#GPIO.setup(11, GPIO.OUT) #servo
+GPIO.setup(11, GPIO.OUT) #servo
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
@@ -56,20 +56,18 @@ while True:
     
     time.sleep(5)
 
+    pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
+    pwm.start(0)
+    pwm.ChangeDutyCycle(5) # left -45?
+    time.sleep(1)
+    pwm.ChangeDutyCycle(7.5) # neutral position
+    time.sleep(1)
+    pwm.ChangeDutyCycle(10) # right +45 ?
+    time.sleep(1)
 
-"""
-pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
-pwm.start(0)
-pwm.ChangeDutyCycle(5) # left -45?
-time.sleep(1)
-pwm.ChangeDutyCycle(7.5) # neutral position
-time.sleep(1)
-pwm.ChangeDutyCycle(10) # right +45 ?
-time.sleep(1)
+    pwm.stop()  #GPIO servo motor works
 
-pwm.stop()  #GPIO servo motor works
-"""
-
+  
 """
 while True:
     i = GPIO.input(7) #get resut of input
