@@ -51,7 +51,7 @@ while True:
     time.sleep(2)
 
     print("pwm on")
-    pwm=GPIO.PWM(11, 50) #GPIO 14, ground and 5v
+    pwm=GPIO.PWM(29, 50) #GPIO 17 - pin 11, ground and 5v 29- gpio5
     pwm.start(0)
     pwm.ChangeDutyCycle(5) # left -45?
     time.sleep(1)
