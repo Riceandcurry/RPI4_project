@@ -3,7 +3,7 @@ import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
-GPIO.setup(14, GPIO.OUT) #servo
+GPIO.setup(8, GPIO.OUT) #servo
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
