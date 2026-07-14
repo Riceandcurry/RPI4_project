@@ -3,7 +3,7 @@ import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
-GPIO.setup(11, GPIO.OUT) #servo
+GPIO.setup(29, GPIO.OUT) #servo
 #GPIO.setup(7,GPIO.IN) # pir sensor
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
@@ -51,7 +51,7 @@ while True:
     time.sleep(2)
 
     print("pwm on")
-    pwm=GPIO.PWM(29, 50) #GPIO 17 - pin 11, ground and 5v 29- gpio5
+    pwm=GPIO.PWM(29, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
     pwm.start(0)
     pwm.ChangeDutyCycle(5) # left -45?
     time.sleep(1)
