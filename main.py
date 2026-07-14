@@ -4,7 +4,7 @@ import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 GPIO.setup(29, GPIO.OUT) #servo
-GPIO.setup(7,GPIO.OUT) # pir sensor, GPIO4. change to OUT
+GPIO.setup(7,GPIO.IN) # pir sensor, GPIO4. 
 #GPIO.setup(11, GPIO.OUT) #ir led/rgb
 #GPIO.setup(7, GPIO.IN)  #ir reciever
 
@@ -63,7 +63,7 @@ while True:
     pwm.stop()  #GPIO servo motor works
     print("pwm off")
     print("pir")
-    '''
+    
     while True:
         i = GPIO.input(7) #get resut of input
         if i == 1:
@@ -83,7 +83,7 @@ while True:
             elif GPIO.input(7) == 1:
                 print("nothin!")
             time.sleep(0.05)
-
+    '''
 GPIO.cleanup() #general exit statement
 
 
