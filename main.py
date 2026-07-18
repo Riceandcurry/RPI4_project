@@ -8,8 +8,8 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 SERVO_PIN = 29
 PIR_PIN = 7
 GREEN_LED_PIN = 11
-BLUE_LED_PIN = 13
-RED_LED_PIN = 15
+BLUE_LED_PIN = 15
+RED_LED_PIN = 13
 BUZZER_PIN = 18
 TOUCH_PIN = 22
 IR_PIN = 16
@@ -40,14 +40,14 @@ while True:
     GPIO.output(GREEN_LED_PIN, GPIO.LOW)
 
     print("Turning ON 13")
-    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    GPIO.output(BLUE_LED_PIN, GPIO.LOW)
-
-    print("Turning ON 15")
     GPIO.output(RED_LED_PIN, GPIO.HIGH)
     time.sleep(2)
     GPIO.output(RED_LED_PIN, GPIO.LOW)
+
+    print("Turning ON 15")
+    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
+    time.sleep(2)
+    GPIO.output(BLUE_LED_PIN, GPIO.LOW)
 
     print("Turning ON 11 and 13") #11 and 13
     GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
