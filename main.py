@@ -109,7 +109,9 @@ while True:
     print("Touch sensor test started...")
     print("Touch the sensor to see the output.")
     while(count < 3):
-        signal.pause()
+        time.sleep(0.1)
+        print(count)
+    print("\nTarget reached (3 counts)!")
 
     print("IR Sensor Active. Press Ctrl+C to exit.") #---------------------IR
     ir_count = 0
