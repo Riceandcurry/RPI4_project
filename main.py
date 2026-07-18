@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import signal
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
@@ -19,7 +20,7 @@ BUZZER_PIN = 24
 GPIO.setup(BUZZER_PIN, GPIO.OUT)
 # Touch sensor OUT pin connected to GPIO 25 (pin 22)
 TOUCH_PIN = 25
-GPIO.setup(TOUCH_PIN, GPIO.IN)
+GPIO.setup(22, GPIO.IN)
 
 
 while True:
