@@ -7,7 +7,6 @@ GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 
 GPIO.setup(29, GPIO.OUT) #servo, GPIO 5
 GPIO.setup(7,GPIO.IN) # pir sensor, GPIO4. 
-
 GPIO.setup(11, GPIO.OUT) #11 means pin 11, GPIO 17
 GPIO.setup(13, GPIO.OUT)
 GPIO.setup(15, GPIO.OUT)
@@ -76,21 +75,14 @@ while True:
 
     print("Buzzer test started.") #--------------------------buzzer
 
-    try:
-        print("Buzzer ON")
-        GPIO.output(BUZZER_PIN, GPIO.HIGH)
-        time.sleep(1)
-        
-        print("Buzzer OFF")
-        GPIO.output(BUZZER_PIN, GPIO.LOW)
-        
-        print("Buzzer test completed.")
-        
-    except KeyboardInterrupt:
-        print("Test stopped by user.")
-        
-    finally:
-        GPIO.output(BUZZER_PIN, GPIO.LOW)
+    print("Buzzer ON")
+    GPIO.output(BUZZER_PIN, GPIO.HIGH)
+    time.sleep(1)
+    
+    print("Buzzer OFF")
+    GPIO.output(BUZZER_PIN, GPIO.LOW)
+
+    print("Buzzer test completed.")
     
     count = 0 #----------------------------------touch
     def touch_detected(channel):
@@ -110,7 +102,6 @@ while True:
     print("Touch the sensor to see the output.")
     while(count < 3):
         time.sleep(0.1)
-        print(count)
     print("\nTarget reached (3 counts)!")
 
     print("IR Sensor Active. Press Ctrl+C to exit.") #---------------------IR
