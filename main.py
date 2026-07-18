@@ -5,61 +5,71 @@ import signal
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
 
-GPIO.setup(29, GPIO.OUT) #servo, GPIO 5
-GPIO.setup(7,GPIO.IN) # pir sensor, GPIO4. 
-GPIO.setup(11, GPIO.OUT) #11 means pin 11, GPIO 17
-GPIO.setup(13, GPIO.OUT)
-GPIO.setup(15, GPIO.OUT)
+SERVO_PIN = 29
+PIR_PIN = 7
+GREEN_LED_PIN = 11
+BLUE_LED_PIN = 13
+RED_LED_PIN = 15
+BUZZER_PIN = 18
+TOUCH_PIN = 22
+IR_PIN = 16
+
+
+GPIO.setup(SERVO_PIN, GPIO.OUT) #servo, GPIO 5
+GPIO.setup(PIR_PIN,GPIO.IN) # pir sensor, GPIO4. 
+GPIO.setup(GREEN_LED_PIN, GPIO.OUT) #11 means pin 11, GPIO 17
+GPIO.setup(BLUE_LED_PIN, GPIO.OUT)
+GPIO.setup(RED_LED_PIN, GPIO.OUT)
 
 # Define the pin connected to the IR Sensor's OUT wire (GPIO 23 -> pin 16)
-sensor_pin = 16
-GPIO.setup(sensor_pin, GPIO.IN)
+
+GPIO.setup(IR_PIN, GPIO.IN)
 # GPIO 24 (pin 18)
-BUZZER_PIN = 18
-GPIO.setup(18, GPIO.OUT)
+
+GPIO.setup(BUZZER_PIN, GPIO.OUT)
 # Touch sensor OUT pin connected to GPIO 25 (pin 22)
-TOUCH_PIN = 22
-GPIO.setup(22, GPIO.IN)
+
+GPIO.setup(TOUCH_PIN, GPIO.IN)
 
 
 while True:
 
     print("Turning ON 11") #------------------------------LED
-    GPIO.output(11, GPIO.HIGH)
+    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
     time.sleep(2)
-    GPIO.output(11, GPIO.LOW)
+    GPIO.output(GREEN_LED_PIN, GPIO.LOW)
 
     print("Turning ON 13")
-    GPIO.output(13, GPIO.HIGH)
+    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
     time.sleep(2)
-    GPIO.output(13, GPIO.LOW)
+    GPIO.output(BLUE_LED_PIN, GPIO.LOW)
 
     print("Turning ON 15")
-    GPIO.output(15, GPIO.HIGH)
+    GPIO.output(RED_LED_PIN, GPIO.HIGH)
     time.sleep(2)
-    GPIO.output(15, GPIO.LOW)
+    GPIO.output(RED_LED_PIN, GPIO.LOW)
 
     print("Turning ON 11 and 13") #11 and 13
-    GPIO.output(11, GPIO.HIGH)
-    GPIO.output(13, GPIO.HIGH)
+    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
     time.sleep(2)
     print("Turning ON 13 and 15") #13 and 15
-    GPIO.output(11, GPIO.LOW)  
-    GPIO.output(15, GPIO.HIGH)
+    GPIO.output(GREEN_LED_PIN, GPIO.LOW)  
+    GPIO.output(RED_LED_PIN, GPIO.HIGH)
     time.sleep(2)
     print("Turning ON 11 and 15") #11 15
-    GPIO.output(13, GPIO.LOW)  
-    GPIO.output(11, GPIO.HIGH)
+    GPIO.output(BLUE_LED_PIN, GPIO.LOW)  
+    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
     time.sleep(2)
 
     print("all offff") #all offfff
-    GPIO.output(11, GPIO.LOW)  
-    GPIO.output(15, GPIO.LOW)  
+    GPIO.output(GREEN_LED_PIN, GPIO.LOW)  
+    GPIO.output(RED_LED_PIN, GPIO.LOW)  
     
     time.sleep(2)
 
     print("pwm on") #---------------------------------------servo
-    pwm=GPIO.PWM(29, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
+    pwm=GPIO.PWM(SERVO_PIN, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
     pwm.start(0)
     pwm.ChangeDutyCycle(5) # left -45?
     time.sleep(1)
@@ -118,7 +128,7 @@ while True:
 
 
     while True: #--------------------------------------------PIR
-        i = GPIO.input(7) #get resut of input
+        i = GPIO.input(PIR_PIN) #get resut of input
         if i == 1:
             print("got 1") #movement detected
         elif i == 0:
