@@ -3,20 +3,28 @@ import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
-GPIO.setup(29, GPIO.OUT) #servo
+
+GPIO.setup(29, GPIO.OUT) #servo, GPIO 5
 GPIO.setup(7,GPIO.IN) # pir sensor, GPIO4. 
-#GPIO.setup(11, GPIO.OUT) #ir led/rgb
-#GPIO.setup(7, GPIO.IN)  #ir reciever
 
 GPIO.setup(11, GPIO.OUT) #11 means pin 11, GPIO 17
 GPIO.setup(13, GPIO.OUT)
 GPIO.setup(15, GPIO.OUT)
 
+# Define the pin connected to the IR Sensor's OUT wire (GPIO 23 -> pin 16)
+sensor_pin = 16
+GPIO.setup(sensor_pin, GPIO.IN)
+# GPIO 24 (pin 18)
+BUZZER_PIN = 24
+GPIO.setup(BUZZER_PIN, GPIO.OUT)
+# Touch sensor OUT pin connected to GPIO 25 (pin 22)
+TOUCH_PIN = 25
+GPIO.setup(TOUCH_PIN, GPIO.IN)
 
 
 while True:
 
-    print("Turning ON 11")
+    print("Turning ON 11") #------------------------------LED
     GPIO.output(11, GPIO.HIGH)
     time.sleep(2)
     GPIO.output(11, GPIO.LOW)
@@ -50,7 +58,7 @@ while True:
     
     time.sleep(2)
 
-    print("pwm on")
+    print("pwm on") #---------------------------------------servo
     pwm=GPIO.PWM(29, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
     pwm.start(0)
     pwm.ChangeDutyCycle(5) # left -45?
@@ -60,30 +68,74 @@ while True:
     pwm.ChangeDutyCycle(10) # right +45 ?
     time.sleep(1)
 
+    
     pwm.stop()  #GPIO servo motor works
     print("pwm off")
     print("pir")
+
+    print("Buzzer test started.") #--------------------------buzzer
+
+    try:
+        print("Buzzer ON")
+        GPIO.output(BUZZER_PIN, GPIO.HIGH)
+        time.sleep(1)
+        
+        print("Buzzer OFF")
+        GPIO.output(BUZZER_PIN, GPIO.LOW)
+        
+        print("Buzzer test completed.")
+        
+    except KeyboardInterrupt:
+        print("Test stopped by user.")
+        
+    finally:
+        GPIO.output(BUZZER_PIN, GPIO.LOW)
     
-    while True:
+    count = 0 #----------------------------------touch
+    def touch_detected(channel):
+        global count
+        count += 1
+        print("Touch detected! Count:", count)
+
+    # Detect rising signal: from Low to HIGH
+    GPIO.add_event_detect(
+        TOUCH_PIN,
+        GPIO.RISING,
+        callback=touch_detected,
+        bouncetime=300
+    )
+
+    print("Touch sensor test started...")
+    print("Touch the sensor to see the output.")
+    while(count < 3):
+        signal.pause()
+
+    print("IR Sensor Active. Press Ctrl+C to exit.") #---------------------IR
+    ir_count = 0
+    while (ir_count < 5):
+        # Check if the signal goes LOW (detects an obstacle)
+        if GPIO.input(sensor_pin) == GPIO.LOW:
+            print("Object Detected!")
+            ir_count += 1
+        else:
+            print("Path Clear")
+        time.sleep(0.5)
+        
+
+
+    while True: #--------------------------------------------PIR
         i = GPIO.input(7) #get resut of input
         if i == 1:
             print("got 1") #movement detected
         elif i == 0:
             print("got 0") #movement not detected
         time.sleep(0.2) #0.2 second pause cause why not
-    '''
-    pwm = GPIO.PWM(7, 38000) #og 11
-    pwm.start(50)  # 50% duty cycle
+ 
 
-    print("IR transmitter ON (38kHz)")
 
-    while True:
-            if GPIO.input(7) == 0:
-                print("detected")
-            elif GPIO.input(7) == 1:
-                print("nothin!")
-            time.sleep(0.05)
-    '''
+
+
+
 GPIO.cleanup() #general exit statement
 
 
