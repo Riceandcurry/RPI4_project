@@ -15,8 +15,8 @@ GPIO.setup(15, GPIO.OUT)
 sensor_pin = 16
 GPIO.setup(sensor_pin, GPIO.IN)
 # GPIO 24 (pin 18)
-BUZZER_PIN = 24
-GPIO.setup(BUZZER_PIN, GPIO.OUT)
+BUZZER_PIN = 18
+GPIO.setup(18, GPIO.OUT)
 # Touch sensor OUT pin connected to GPIO 25 (pin 22)
 TOUCH_PIN = 22
 GPIO.setup(22, GPIO.IN)
