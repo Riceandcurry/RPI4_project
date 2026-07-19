@@ -24,7 +24,11 @@ GPIO.setup(IR_PIN, GPIO.IN)
 GPIO.setup(BUZZER_PIN, GPIO.OUT)
 GPIO.setup(TOUCH_PIN, GPIO.IN)
 
-
+def led_waiting():
+    print("time for med")
+    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
+    time.sleep(2)
+    GPIO.output(BLUE_LED_PIN, GPIO.LOW)
 
 
 def leds():
@@ -87,19 +91,23 @@ def touch_callback(channel):
     print(f"Touch detected! Count: {touch_count}")
 
 
-def touch():
-    print("\n--- Starting Touch Sensor Test ---")
-    global touch_count
-    touch_count = 0 # reset counter
+def touch(timeout=5.0, target_touches=3):
+    print(f"[TOUCH] You have {timeout} seconds to touch the sensor {target_touches} times!")
+    touch_counts = 0
+    start_time = time.time()
+    last_state = GPIO.LOW
     
-    # Set up interrupt listener
-    GPIO.add_event_detect(TOUCH_PIN, GPIO.RISING, callback=touch_callback, bouncetime=300)
-    
-    print("Touch the sensor 3 times to proceed...")
-    while touch_count < 3:
-        time.sleep(0.1)
-        
-    print("sensor count 3 reached")
+    while (time.time() - start_time) < timeout:
+        current_state = GPIO.input(TOUCH_PIN)
+        if current_state == GPIO.HIGH and last_state == GPIO.LOW:
+            touch_counts += 1
+            print(f"  Touch registered! ({touch_counts}/{target_touches})")
+            time.sleep(0.2) 
+            if touch_counts >= target_touches:
+                return True
+        last_state = current_state
+        time.sleep(0.05) 
+    return False
 
 def ir():
     print("IR Sensor Active. Press Ctrl+C to exit.") 
@@ -114,26 +122,38 @@ def ir():
         time.sleep(0.5)
     print("ir sensor end")
         
-def pir(duration_seconds=10): #change for actual code
-    print("pir sensor start")
-    start_time = time.time()
-    while (time.time() - start_time) < duration_seconds:
+def pir(motion_threshold=10): #change for actual code
+    motion_counter = 0
+    while motion_counter < motion_threshold:
         motion = GPIO.input(PIR_PIN)
         if motion == 1:
-            print("motion! (got 1)")
+            motion_counter += 1
+            print(f" Motion detected! (Activity Level: {motion_counter}/{motion_threshold})")
+            time.sleep(0.1) 
         else:
-            print("no motion (got 0)")
-        time.sleep(0.5)
-
+            time.sleep(0.2)
+            
+    print("motion threshold reached")
 while True:
-    leds()
-    servo()
+    pir(motion_threshold=15) # pir only comes backe
+    led_waiting()
     buzzer()
-    touch()
+    servo()
     ir()
-    pir(duration_seconds=10) # Test PIR for 10 seconds before looping back
+    touch()
     
-    print("\n==============================")
-    print("Iteration complete. Restarting loop...")
-    print("==============================\n")
+
+    success = touch(timeout=5.0, target_touches=3)     
+    if success:
+        print("taken meds!")
+        GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+        time.sleep(3)
+        GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+    else:
+        print("not taken meds")
+        GPIO.output(RED_LED_PIN, GPIO.HIGH)
+        time.sleep(3)
+        GPIO.output(RED_LED_PIN, GPIO.LOW)
+        
+    print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
