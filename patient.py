@@ -23,6 +23,7 @@ GPIO.setup(RED_LED_PIN, GPIO.OUT)
 GPIO.setup(IR_PIN, GPIO.IN)
 GPIO.setup(BUZZER_PIN, GPIO.OUT)
 GPIO.setup(TOUCH_PIN, GPIO.IN)
+pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency (20ms period)
 
 def led_waiting():
     print("time for med")
@@ -42,15 +43,16 @@ def led_not_taken_meds():
 
 def servo_open():
     print("pwm on") 
-    pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency (20ms period)
     pwm.start(0)
     
     #(-90°)
     print("Servo: 90 degrees left")
     pwm.ChangeDutyCycle(2.5) 
     time.sleep(1)
+    pwm.stop()
 
 def servo_close():
+    pwm.start(0)
     #(+90°)
     print("Servo: 90 degrees right")
     pwm.ChangeDutyCycle(12.5) 
