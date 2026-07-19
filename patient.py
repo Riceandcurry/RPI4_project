@@ -113,6 +113,7 @@ def ir(target_clearances=5, timeout=5.0):
             print("Object Detected (Blocked)")
             time.sleep(0.2)
     print("ir sensor end")
+    return True
         
 def pir(motion_threshold=10): #change for actual code
     print("pir active, waiting ..............")
@@ -127,18 +128,24 @@ def pir(motion_threshold=10): #change for actual code
             time.sleep(0.2)
             
     print("motion threshold reached")
+
+
+
+
+
 while True:
     pir(motion_threshold=15) # pir only comes backe
     led_waiting()
     buzzer()
     servo()
     ir_success = ir(target_clearances=5, timeout=5.0)
-    
+
     if not ir_success:
-            print("IR Path did not clear!")
-            led_not_taken_meds()
-            continue
-    else:
+        print("IR Path did not clear!")
+        led_not_taken_meds()
+        continue 
+
+    if ir_success:
         success = touch(timeout=5.0, target_touches=3)     
         if success:
             print("taken meds!")
@@ -146,7 +153,8 @@ while True:
         else:
             print("not taken meds")
             led_not_taken_meds()
-            
+
+       
         
     print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
