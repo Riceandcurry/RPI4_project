@@ -40,8 +40,7 @@ def led_not_taken_meds():
     time.sleep(3)
     GPIO.output(RED_LED_PIN, GPIO.LOW)    
 
-
-def servo():
+def servo_open():
     print("pwm on") 
     pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency (20ms period)
     pwm.start(0)
@@ -50,12 +49,8 @@ def servo():
     print("Servo: 90 degrees left")
     pwm.ChangeDutyCycle(2.5) 
     time.sleep(1)
-    
-    #(0°)
-    print("Servo: Neutral position")
-    pwm.ChangeDutyCycle(7.5) 
-    time.sleep(1)
-    
+
+def servo_close():
     #(+90°)
     print("Servo: 90 degrees right")
     pwm.ChangeDutyCycle(12.5) 
@@ -137,22 +132,25 @@ while True:
     pir(15) # pir only comes backe
     led_waiting()
     buzzer()
-    servo()
+    servo_open()
     ir_success = ir(5,5.0)
 
     if not ir_success:
         print("IR Path did not clear!")
         led_not_taken_meds()
+        servo_close()
         continue 
     else:
         print("IR Path cleared")
-        success = touch(5.0,3)     
+        success = touch(5.0,1)     
         if success:
             print("taken meds!")
             led_taken_meds()
+            servo_close()
         else:
             print("not taken meds")
             led_not_taken_meds()
+            servo_close()
         
     print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
