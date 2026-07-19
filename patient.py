@@ -144,8 +144,8 @@ while True:
         print("IR Path did not clear!")
         led_not_taken_meds()
         continue 
-
-    if ir_success:
+    else:
+        print("IR Path cleared")
         success = touch(timeout=5.0, target_touches=3)     
         if success:
             print("taken meds!")
@@ -153,8 +153,6 @@ while True:
         else:
             print("not taken meds")
             led_not_taken_meds()
-
-       
         
     print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
