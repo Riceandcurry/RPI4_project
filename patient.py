@@ -41,39 +41,6 @@ def led_not_taken_meds():
     GPIO.output(RED_LED_PIN, GPIO.LOW)    
 
 
-def leds():
-    print("Turning ON GREEN (11)") 
-    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    GPIO.output(GREEN_LED_PIN, GPIO.LOW)
-
-    print("Turning ON RED (13)")
-    GPIO.output(RED_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    GPIO.output(RED_LED_PIN, GPIO.LOW)
-
-    print("Turning ON BLUE (15)")
-    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    GPIO.output(BLUE_LED_PIN, GPIO.LOW)
-
-    print("Turning ON 11 and 13") #11 and 13
-    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
-    GPIO.output(BLUE_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    print("Turning ON 13 and 15") #13 and 15
-    GPIO.output(GREEN_LED_PIN, GPIO.LOW)  
-    GPIO.output(RED_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-    print("Turning ON 11 and 15") #11 15
-    GPIO.output(BLUE_LED_PIN, GPIO.LOW)  
-    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
-    time.sleep(2)
-
-    print("all offff") #all offfff
-    GPIO.output(GREEN_LED_PIN, GPIO.LOW)  
-    GPIO.output(RED_LED_PIN, GPIO.LOW)  
-
 def servo():
     print("pwm on") 
     pwm=GPIO.PWM(SERVO_PIN, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
@@ -126,9 +93,10 @@ def ir():
         # Check if the signal goes LOW (detects an obstacle)
         if GPIO.input(IR_PIN) == GPIO.LOW:
             print("Object Detected!")
-            ir_count += 1
+            
         else:
             print("Path Clear")
+            ir_count += 1
         time.sleep(0.5)
     print("ir sensor end")
         
