@@ -51,9 +51,6 @@ def servo_open():
 
 def servo_close():
     print("Servo closing...")
-    print("Servo: Neutral position")
-    pwm.ChangeDutyCycle(7.5) 
-    time.sleep(1)
     print("Servo: 90 degrees right")
     pwm.ChangeDutyCycle(12.5) 
     time.sleep(1)
