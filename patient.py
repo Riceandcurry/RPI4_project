@@ -104,7 +104,7 @@ def ir(target_clearances=5, timeout=5.0):
     while clear_count < target_clearances:
         if (time.time() - start_time) >= timeout:
             print(f"IR window timed out after {timeout} seconds. Moving on...")
-            break
+            return False
         if GPIO.input(IR_PIN) == GPIO.HIGH:
             clear_count += 1
             print(f"Path Clear! ({clear_count}/{target_clearances})")
