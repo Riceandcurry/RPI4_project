@@ -78,7 +78,7 @@ def touch_callback(channel):
     print(f"Touch detected! Count: {touch_count}")
 
 
-def touch(timeout=5.0, target_touches=3):
+def touch(timeout, target_touches):
     print(f"[TOUCH] You have {timeout} seconds to touch the sensor {target_touches} times!")
     touch_counts = 0
     start_time = time.time()
@@ -96,7 +96,7 @@ def touch(timeout=5.0, target_touches=3):
         time.sleep(0.05) 
     return False
 
-def ir(target_clearances=5, timeout=5.0):
+def ir(target_clearances, timeout):
     print(f"IR Sensor Active. Waiting for {target_clearances} clear readings (Max {timeout}s)...") 
     clear_count = 0
     start_time = time.time()
@@ -115,7 +115,7 @@ def ir(target_clearances=5, timeout=5.0):
     print("ir sensor end")
     return True
         
-def pir(motion_threshold=10): #change for actual code
+def pir(motion_threshold): #change for actual code
     print("pir active, waiting ..............")
     motion_counter = 0
     while motion_counter < motion_threshold:
@@ -134,11 +134,11 @@ def pir(motion_threshold=10): #change for actual code
 
 
 while True:
-    pir(motion_threshold=15) # pir only comes backe
+    pir(15) # pir only comes backe
     led_waiting()
     buzzer()
     servo()
-    ir_success = ir(target_clearances=5, timeout=5.0)
+    ir_success = ir(5,5.0)
 
     if not ir_success:
         print("IR Path did not clear!")
@@ -146,7 +146,7 @@ while True:
         continue 
     else:
         print("IR Path cleared")
-        success = touch(timeout=5.0, target_touches=3)     
+        success = touch(5.0,3)     
         if success:
             print("taken meds!")
             led_taken_meds()
