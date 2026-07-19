@@ -43,14 +43,24 @@ def led_not_taken_meds():
 
 def servo():
     print("pwm on") 
-    pwm=GPIO.PWM(SERVO_PIN, 50) #GPIO 17 - pin 11, ground and 5v gpio5 - pin 29
+    pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency (20ms period)
     pwm.start(0)
-    pwm.ChangeDutyCycle(5) # left -45?
+    
+    #(-90°)
+    print("Servo: 90 degrees left")
+    pwm.ChangeDutyCycle(2.5) 
     time.sleep(1)
-    pwm.ChangeDutyCycle(7.5) # neutral position
+    
+    #(0°)
+    print("Servo: Neutral position")
+    pwm.ChangeDutyCycle(7.5) 
     time.sleep(1)
-    pwm.ChangeDutyCycle(10) # right +45 ?
+    
+    #(+90°)
+    print("Servo: 90 degrees right")
+    pwm.ChangeDutyCycle(12.5) 
     time.sleep(1)
+    
     pwm.stop()
     print("pwm off")
 
@@ -86,21 +96,26 @@ def touch(timeout=5.0, target_touches=3):
         time.sleep(0.05) 
     return False
 
-def ir():
-    print("IR Sensor Active. Press Ctrl+C to exit.") 
-    ir_count = 0
-    while (ir_count < 5):
-        # Check if the signal goes LOW (detects an obstacle)
-        if GPIO.input(IR_PIN) == GPIO.LOW:
-            print("Object Detected!")
-            
+def ir(target_clearances=5, timeout=5.0):
+    print(f"IR Sensor Active. Waiting for {target_clearances} clear readings (Max {timeout}s)...") 
+    clear_count = 0
+    start_time = time.time()
+    
+    while clear_count < target_clearances:
+        if (time.time() - start_time) >= timeout:
+            print(f"IR window timed out after {timeout} seconds. Moving on...")
+            break
+        if GPIO.input(IR_PIN) == GPIO.HIGH:
+            clear_count += 1
+            print(f"Path Clear! ({clear_count}/{target_clearances})")
+            time.sleep(0.4) 
         else:
-            print("Path Clear")
-            ir_count += 1
-        time.sleep(0.5)
+            print("Object Detected (Blocked)")
+            time.sleep(0.2)
     print("ir sensor end")
         
 def pir(motion_threshold=10): #change for actual code
+    print("pir active, waiting ..............")
     motion_counter = 0
     while motion_counter < motion_threshold:
         motion = GPIO.input(PIR_PIN)
@@ -117,7 +132,7 @@ while True:
     led_waiting()
     buzzer()
     servo()
-    ir()
+    ir(target_clearances=5, timeout=5.0)
     
     success = touch(timeout=5.0, target_touches=3)     
     if success:
