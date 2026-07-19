@@ -30,6 +30,16 @@ def led_waiting():
     time.sleep(2)
     GPIO.output(BLUE_LED_PIN, GPIO.LOW)
 
+def led_taken_meds():
+    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+    time.sleep(3)
+    GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+
+def led_not_taken_meds():
+    GPIO.output(RED_LED_PIN, GPIO.HIGH)
+    time.sleep(3)
+    GPIO.output(RED_LED_PIN, GPIO.LOW)    
+
 
 def leds():
     print("Turning ON GREEN (11)") 
@@ -140,20 +150,15 @@ while True:
     buzzer()
     servo()
     ir()
-    touch()
     
-
     success = touch(timeout=5.0, target_touches=3)     
     if success:
         print("taken meds!")
-        GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
-        time.sleep(3)
-        GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+        led_taken_meds()
     else:
         print("not taken meds")
-        GPIO.output(RED_LED_PIN, GPIO.HIGH)
-        time.sleep(3)
-        GPIO.output(RED_LED_PIN, GPIO.LOW)
+        led_not_taken_meds()
+        
         
     print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
