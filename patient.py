@@ -132,16 +132,21 @@ while True:
     led_waiting()
     buzzer()
     servo()
-    ir(target_clearances=5, timeout=5.0)
+    ir_success = ir(target_clearances=5, timeout=5.0)
     
-    success = touch(timeout=5.0, target_touches=3)     
-    if success:
-        print("taken meds!")
-        led_taken_meds()
+    if not ir_success:
+            print("IR Path did not clear!")
+            led_not_taken_meds()
+            continue
     else:
-        print("not taken meds")
-        led_not_taken_meds()
-        
+        success = touch(timeout=5.0, target_touches=3)     
+        if success:
+            print("taken meds!")
+            led_taken_meds()
+        else:
+            print("not taken meds")
+            led_not_taken_meds()
+            
         
     print("\nCycle finished. Resetting back to PIR scan stage...")
     time.sleep(1)
