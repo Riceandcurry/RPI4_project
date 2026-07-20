@@ -1,5 +1,8 @@
 import time
 import paho.mqtt.client as mqtt
+import datetime
+
+
 
 BROKER_IP = "10.80.203.109"  
 SUB_TOPIC = "pi3_to_pi2"     
@@ -30,8 +33,9 @@ client.loop_start()
 
 try:
     while True:
-        message_to_send = f"Hello Pi 3! Time is {time.time()}"
-        print(f"[SENDING]: {message_to_send}")
+        cur_med_taken = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[patient ate medicine on]: {cur_med_taken}") #for us to see
+        message_to_send = (f"[patient ate medicine on]: {cur_med_taken}")
         client.publish(PUB_TOPIC, message_to_send)
         time.sleep(10)
 except KeyboardInterrupt:

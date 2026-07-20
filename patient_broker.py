@@ -1,12 +1,12 @@
 import time
+import datetime
+import json
 import paho.mqtt.client as mqtt
 import RPi.GPIO as GPIO
-import time
-import datetime
 
-
+# GPIO Configuration
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD) #GPI.BOARD
+GPIO.setmode(GPIO.BOARD)
 
 SERVO_PIN = 29
 PIR_PIN = 7
@@ -17,26 +17,27 @@ BUZZER_PIN = 18
 TOUCH_PIN = 22
 IR_PIN = 16
 
-
-GPIO.setup(SERVO_PIN, GPIO.OUT) #servo, GPIO 5
-GPIO.setup(PIR_PIN,GPIO.IN) # pir sensor, GPIO4. 
-GPIO.setup(GREEN_LED_PIN, GPIO.OUT) #green led, GPIO 17
-GPIO.setup(BLUE_LED_PIN, GPIO.OUT) #
+GPIO.setup(SERVO_PIN, GPIO.OUT)
+GPIO.setup(PIR_PIN, GPIO.IN)
+GPIO.setup(GREEN_LED_PIN, GPIO.OUT)
+GPIO.setup(BLUE_LED_PIN, GPIO.OUT)
 GPIO.setup(RED_LED_PIN, GPIO.OUT)
 GPIO.setup(IR_PIN, GPIO.IN)
 GPIO.setup(BUZZER_PIN, GPIO.OUT)
 GPIO.setup(TOUCH_PIN, GPIO.IN)
+
 pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency
 pwm.start(0)
 
 medicine_time = None
-scheduled_med_time = None  # Expected format: "HH:MM"
+scheduled_med_time = None  # expected format: "HH:MM"
 meds_cycle_triggered = False
 
 BROKER_IP = "10.80.203.109"  
 SUB_TOPIC = "pi3_to_pi2"     
 PUB_TOPIC = "pi2_to_pi3"     
 
+# --- Helper Functions ---
 
 def led_waiting():
     print("time for med")
@@ -46,12 +47,12 @@ def led_waiting():
 
 def led_taken_meds():
     GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
-    time.sleep(3)
+    time.sleep(1)  # updated to 1 second
     GPIO.output(GREEN_LED_PIN, GPIO.LOW)
 
 def led_not_taken_meds():
     GPIO.output(RED_LED_PIN, GPIO.HIGH)
-    time.sleep(3)
+    time.sleep(1)  # updated to 1 second
     GPIO.output(RED_LED_PIN, GPIO.LOW)    
 
 def servo_open():
@@ -59,31 +60,24 @@ def servo_open():
     print("Servo: 90 degrees left")
     pwm.ChangeDutyCycle(2.5) 
     time.sleep(1)
-    pwm.ChangeDutyCycle(0)# prevent jitter
+    pwm.ChangeDutyCycle(0)  # Prevent jitter
 
 def servo_close():
     print("Servo closing...")
     print("Servo: 90 degrees right")
     pwm.ChangeDutyCycle(12.5) 
     time.sleep(1)
-    pwm.ChangeDutyCycle(0)    # prevent jitter
+    pwm.ChangeDutyCycle(0)    # Prevent jitter
     print("servo closed")
 
-def buzzer(): #1 second buzzer
+def buzzer():  #1 sec
     print("Buzzer ON")
     GPIO.output(BUZZER_PIN, GPIO.HIGH)
     time.sleep(1)
-    
     print("Buzzer OFF")
     GPIO.output(BUZZER_PIN, GPIO.LOW)
 
-def touch_callback(channel):
-    global touch_count
-    touch_count += 1
-    print(f"Touch detected! Count: {touch_count}")
-
-
-def touch(timeout, target_touches): #current touch 1
+def touch(timeout, target_touches):
     print(f"[TOUCH] You have {timeout} seconds to touch the sensor {target_touches} times!")
     touch_counts = 0
     start_time = time.time()
@@ -120,7 +114,7 @@ def ir(target_clearances, timeout):
     print("ir sensor end")
     return True
         
-def pir(motion_threshold): #change for testing, 10?
+def pir(motion_threshold):
     print("pir active, waiting ..............")
     motion_counter = 0
     while motion_counter < motion_threshold:
@@ -134,6 +128,7 @@ def pir(motion_threshold): #change for testing, 10?
             
     print("motion threshold reached")
 
+# -----
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -144,19 +139,26 @@ def on_connect(client, userdata, flags, rc):
         print(f"Connection failed with code {rc}")
 
 def on_message(client, userdata, message):
+    global scheduled_med_time, meds_cycle_triggered  
+    
     payload = message.payload.decode()
     print(f"\n[RECEIVED from Pi 3]: {payload}")
+    
     if "Ping" in payload:
         print("Sending reply back to Pi 3...")
         client.publish(PUB_TOPIC, "Ping reply from Pi 2!")
-    try: #CHANGED CODEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE when tested 
+        return  
+        
+    try:
         data = json.loads(payload)
         if "medicine_time" in data:
             scheduled_med_time = data["medicine_time"]
-            meds_cycle_triggered = False  # Reset flag so the new scheduled time can execute
+            meds_cycle_triggered = False 
             print(f"[SCHEDULE UPDATED]: Next medicine cycle set for {scheduled_med_time}")
     except json.JSONDecodeError:
         print("[ERROR]: Payload received was neither a 'Ping' nor a valid JSON string.")
+
+# innit
 
 client = mqtt.Client()
 client.on_connect = on_connect
@@ -166,13 +168,14 @@ print("Connecting to broker...")
 client.connect(BROKER_IP, 1883, 60)
 client.loop_start()
 
+# main
+
 try:
     while True:
-        # Check current time
         now = datetime.datetime.now()
         current_time_str = now.strftime("%H:%M")
         
-        # only when i asked
+        # Trigger medicine cycle
         if scheduled_med_time and (current_time_str == scheduled_med_time) and not meds_cycle_triggered:
             print(f"\n[ALERT] Current time matches schedule ({current_time_str})! Starting routine...")
             
@@ -181,10 +184,11 @@ try:
             buzzer()
             servo_open()
             
-            ir_success = ir(5, 5.0)
+            ir_success = ir(5, 10.0)  #time 10 seconds
 
             if not ir_success:
                 print("IR Path did not clear!")
+                client.publish(PUB_TOPIC, "[patient missed medicine]")  #notif pi3
                 led_not_taken_meds()
                 servo_close()
             else:
@@ -195,7 +199,6 @@ try:
                     cur_med_taken = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     print(f"[patient ate medicine on]: {cur_med_taken}")
                     
-                    # Notify Pi 3 over MQTT
                     message_to_send = f"[patient ate medicine on]: {cur_med_taken}"
                     client.publish(PUB_TOPIC, message_to_send)
                     
@@ -203,20 +206,23 @@ try:
                     servo_close()
                 else:
                     print("Meds not taken")
+                    client.publish(PUB_TOPIC, "[patient missed medicine]")  #notif pi3
                     led_not_taken_meds()
                     servo_close()
             
             print("\nCycle finished. Resetting flag and waiting for next schedule changes...")
-            meds_cycle_triggered = True  # Prevent looping again within the same minute
+            meds_cycle_triggered = True 
             
-        # Reset the trigger flag when the minute passes so it can accept the same time tomorrow
         if scheduled_med_time and (current_time_str != scheduled_med_time):
             meds_cycle_triggered = False
 
         time.sleep(1)
 
 except KeyboardInterrupt:
-    print("\nStopping application and cleaning up GPIO...")
+    print("\nStopping application via keyboard interrupt...")
+
+finally:
+    print("Cleaning up GPIO and disconnecting MQTT...")
     pwm.stop()
     GPIO.cleanup()
     client.loop_stop()
