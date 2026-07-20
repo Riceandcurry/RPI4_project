@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
-import signal
+import datetime
+
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD) #GPI.BOARD
@@ -25,6 +26,8 @@ GPIO.setup(BUZZER_PIN, GPIO.OUT)
 GPIO.setup(TOUCH_PIN, GPIO.IN)
 pwm = GPIO.PWM(SERVO_PIN, 50)  # 50Hz frequency
 pwm.start(0)
+
+medicine_time = None
 
 def led_waiting():
     print("time for med")
@@ -143,8 +146,13 @@ while True:
         success = touch(5.0,1)     
         if success:
             print("taken meds!")
+            cur_med_taken = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(f"[patient ate medicine on]: {cur_med_taken}") #for us to see
+            message_to_send = (f"[patient ate medicine on]: {cur_med_taken}")
+            #client.publish(PUB_TOPIC, message_to_send)       when in broker.py
             led_taken_meds()
             servo_close()
+            
         else:
             print("not taken meds")
             led_not_taken_meds()
