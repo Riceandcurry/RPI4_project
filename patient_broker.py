@@ -33,7 +33,7 @@ medicine_time = None
 scheduled_med_time = None  # expected format: "HH:MM"
 meds_cycle_triggered = False
 
-BROKER_IP = "10.80.203.109"  
+BROKER_IP = "10.152.241.109"  
 SUB_TOPIC = "pi3_to_pi2"     
 PUB_TOPIC = "pi2_to_pi3"     
 
