@@ -114,10 +114,17 @@ def ir(target_clearances, timeout):
     print("ir sensor end")
     return True
         
-def pir(motion_threshold):
-    print("pir active, waiting ..............")
+def pir(motion_threshold, timeout_seconds=180):
+    print(f"PIR active, waiting for activity (Timeout: {timeout_seconds}s)...")
     motion_counter = 0
+    start_time = time.time()
+
     while motion_counter < motion_threshold:
+        # Check if 3 minutes have passed
+        if (time.time() - start_time) >= timeout_seconds:
+            print(f"PIR timed out after {timeout_seconds} seconds! No movement detected.")
+            return False
+
         motion = GPIO.input(PIR_PIN)
         if motion == 1:
             motion_counter += 1
@@ -126,9 +133,8 @@ def pir(motion_threshold):
         else:
             time.sleep(0.2)
             
-    print("motion threshold reached")
-
-# -----
+    print("Motion threshold reached")
+    return True
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -179,36 +185,43 @@ try:
         if scheduled_med_time and (current_time_str == scheduled_med_time) and not meds_cycle_triggered:
             print(f"\n[ALERT] Current time matches schedule ({current_time_str})! Starting routine...")
             
-            pir(15) 
-            led_waiting()
-            buzzer()
-            servo_open()
+            # Wait for PIR motion with a 3-minute (180 second) timeout
+            pir_success = pir(motion_threshold=15, timeout_seconds=180)
             
-            ir_success = ir(5, 10.0)  #time 10 seconds
-
-            if not ir_success:
-                print("IR Path did not clear!")
-                client.publish(PUB_TOPIC, "[patient missed medicine]")  #notif pi3
+            if not pir_success:
+                print("Patient was not detected within 3 minutes! Medicine missed.")
+                client.publish(PUB_TOPIC, "[patient missed medicine]")
                 led_not_taken_meds()
-                servo_close()
             else:
-                print("IR Path cleared")
-                success = touch(5.0, 1)     
-                if success:
-                    print("Meds successfully taken!")
-                    cur_med_taken = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    print(f"[patient ate medicine on]: {cur_med_taken}")
-                    
-                    message_to_send = f"[patient ate medicine on]: {cur_med_taken}"
-                    client.publish(PUB_TOPIC, message_to_send)
-                    
-                    led_taken_meds()
-                    servo_close()
-                else:
-                    print("Meds not taken")
-                    client.publish(PUB_TOPIC, "[patient missed medicine]")  #notif pi3
+                led_waiting()
+                buzzer()
+                servo_open()
+                
+                ir_success = ir(5, 10.0)  # time 10 seconds
+
+                if not ir_success:
+                    print("IR Path did not clear!")
+                    client.publish(PUB_TOPIC, "[patient missed medicine]")  # notify pi3
                     led_not_taken_meds()
                     servo_close()
+                else:
+                    print("IR Path cleared")
+                    success = touch(10.0, 1)     
+                    if success:
+                        print("Meds successfully taken!")
+                        cur_med_taken = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        print(f"[patient ate medicine on]: {cur_med_taken}")
+                        
+                        message_to_send = f"[patient ate medicine on]: {cur_med_taken}"
+                        client.publish(PUB_TOPIC, message_to_send)
+                        
+                        led_taken_meds()
+                        servo_close()
+                    else:
+                        print("Meds not taken")
+                        client.publish(PUB_TOPIC, "[patient missed medicine]")  # notify pi3
+                        led_not_taken_meds()
+                        servo_close()
             
             print("\nCycle finished. Resetting flag and waiting for next schedule changes...")
             meds_cycle_triggered = True 
